@@ -1,42 +1,603 @@
+/* ==========================================================================
+   iTunes Music Charts 2.0 — Global Styles
+   Visual target: iTunes 7 (circa 2007)
+   - Brushed metal titlebar (already present)
+   - Light steel sidebar with soft inset edges
+   - Aqua-blue selection highlight
+   - Light content area, glossy table header, zebra rows
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Global palette */
+  --stage-dk: #1d1f24;
+  /* page background around the window */
+  --ink: #0f172a;
+  /* dark text on light */
+  --ink-dim: #64748b;
+  /* secondary text on light */
+  --ink-ghost: #94a3b8;
+  /* tertiary text on light */
+
+  /* Titlebar (brushed metal) */
+  --metal-top: #d7d9dd;
+  --metal-mid: #bdc1c7;
+  --metal-edge: #9da3aa;
+
+  /* Sidebar (light steel) */
+  --side-grad-top: #e8ecf2;
+  /* light top */
+  --side-grad-mid: #dfe3ea;
+  /* body */
+  --side-grad-bot: #d2d8e1;
+  /* lower edge */
+  --side-border: #b9c1cc;
+  /* outer line */
+  --side-inset-top: rgba(255, 255, 255, .75);
+  --side-inset-bot: rgba(0, 0, 0, .08);
+
+  /* Selection (Aqua) */
+  --sel-blue: #3b78e7;
+  /* main aqua */
+  --sel-blue-pressed: #2c62c1;
+  --sel-text: #ffffff;
+
+  /* Content panel */
+  --panel-bg: #f4f6f9;
+  /* light paper */
+  --panel-edge: #cfd6df;
+  /* separator lines */
+  --panel-shadow: rgba(12, 17, 27, .08);
+
+  /* Table */
+  --thead-grad-top: #f7f9fc;
+  --thead-grad-bot: #e7edf6;
+  --thead-rule: #c9d5e5;
+  --row-alt: #f8fafc;
+  --row-hover: #eef3fb;
+
+  /* Buttons / misc */
+  --chrome-line: rgba(0, 0, 0, .12);
+  --chip-fill: #eef2f7;
+  --chip-line: #c8d0dc;
+
+  /* Legacy dark accents kept for player badge progress fill */
+  --green: #84cc16;
+  --blue: #3b82f6;
+
+  /* Window controls */
+  --traffic-red: #ff5f57;
+  --traffic-yellow: #febc2e;
+  --traffic-green: #28c840;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Reset & base
+   ------------------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  height: 100%;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  background: var(--stage-dk);
+  color: var(--ink);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
 
-a {
+/* App window chrome
+   ------------------------------------------------------------------------ */
+.window {
+  margin: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel-bg);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, .35),
+    inset 0 1px 0 rgba(255, 255, 255, .6);
+  border: 1px solid rgba(0, 0, 0, .35);
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+}
+
+/* Titlebar — brushed metal look (already close; tweak for extra sheen)
+   ------------------------------------------------------------------------ */
+.titlebar {
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr;
+  align-items: stretch;
+  background:
+    linear-gradient(#eef1f6, var(--metal-top) 18%, var(--metal-mid) 54%, var(--metal-edge) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, .4);
+}
+
+.traffic {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.red {
+  background: var(--traffic-red);
+}
+
+.dot.yellow {
+  background: var(--traffic-yellow);
+}
+
+.dot.green {
+  background: var(--traffic-green);
+}
+
+/* Toolbar (inside titlebar, left segment + search + selectors)
+   ------------------------------------------------------------------------ */
+.toolbar {
+  display: grid;
+  grid-template-columns: 240px 1fr 260px;
+  gap: 12px;
+  padding: 10px 14px;
+  align-items: center;
+}
+
+.seg {
+  display: inline-flex;
+  background: #eef1f6;
+  border: 1px solid #c7cbd3;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .7),
+    0 1px 0 rgba(0, 0, 0, .04);
+}
+
+.seg button {
+  padding: 8px 12px;
+  background: linear-gradient(#fefefe, #f2f4f7);
+  border: 0;
+  border-right: 1px solid #c7cbd3;
+  color: #1f2937;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .75);
+  cursor: pointer;
+}
+
+.seg button:last-child {
+  border-right: 0;
+}
+
+.seg button.active {
+  background: linear-gradient(#ffffff, #e9edf3);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #c7cbd3;
+  border-radius: 10px;
+  padding: 8px 10px;
+  gap: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .8),
+    inset 0 -1px 0 rgba(0, 0, 0, .05);
+}
+
+.search input {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.store {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+select,
+.btn {
+  background: linear-gradient(#ffffff, #eef2f7);
+  color: var(--ink);
+  border: 1px solid var(--chip-line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .8),
+    0 1px 0 rgba(0, 0, 0, .05);
+}
+
+.btn {
+  cursor: pointer;
+}
+
+/* Player badge — TOP MIDDLE (iTunes current track display)
+   ------------------------------------------------------------------------ */
+.playerBadge {
+  display: grid;
+  grid-template-columns: 60px 1fr 220px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+}
+
+.playerBadge .art {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+}
+
+.playerBadge .trackline {
+  min-width: 0;
+}
+
+.playerBadge .tname {
+  font-weight: 700;
+  color: #0f172a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .6);
+}
+
+.playerBadge .tartist {
+  color: #334155;
+  font-size: 13px;
+}
+
+.playerBadge .progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.playerBadge .bar {
+  position: relative;
+  height: 6px;
+  flex: 1;
+  overflow: hidden;
+  background: linear-gradient(#dae3ee, #cfd8e5);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, .08),
+    0 1px 0 rgba(255, 255, 255, .6);
+}
+
+.playerBadge .fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: linear-gradient(#9be452, #6bbd1b);
+  box-shadow:
+    inset 0 -1px 0 rgba(0, 0, 0, .1),
+    0 1px 0 rgba(255, 255, 255, .5);
+  border-radius: 999px;
+}
+
+.playerBadge .ctrls {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Content split: Sidebar (left) + Main (right)
+   ------------------------------------------------------------------------ */
+.content {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 0;
+  flex: 1;
+}
+
+/* Sidebar — light steel panel with inset edges (iTunes Sources list)
+   ------------------------------------------------------------------------ */
+.sidebar {
+  background:
+    linear-gradient(#f3f6fa, var(--side-grad-top) 20%, var(--side-grad-mid) 65%, var(--side-grad-bot));
+  border-right: 1px solid var(--side-border);
+  box-shadow:
+    inset 0 1px 0 var(--side-inset-top),
+    inset 0 -1px 0 var(--side-inset-bot);
+  padding: 10px;
+  overflow: auto;
+}
+
+.side-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 11px;
+  color: #5c6b80;
+  margin: 10px 8px 8px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+}
+
+.side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.side-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #2c3e55;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  font-size: 13px;
+}
+
+.side-item:hover {
+  background: linear-gradient(#ffffff, #e9eef5);
+  border-color: rgba(0, 0, 0, .08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .85),
+    0 1px 0 rgba(255, 255, 255, .45);
+}
+
+.side-item.active {
+  background: linear-gradient(#5c92ff, #3b78e7);
+  border-color: #2f63c7;
+  color: var(--sel-text);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .35),
+    inset 0 -1px 0 rgba(0, 0, 0, .15),
+    0 1px 0 rgba(255, 255, 255, .45);
+}
+
+.side-item .badge {
+  margin-left: auto;
+  font-size: 11px;
+  opacity: .9;
   color: inherit;
-  text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* Main panel — lighter paper with gentle inner shadow
+   ------------------------------------------------------------------------ */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: linear-gradient(#ffffff, #f7f9fc);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .8),
+    inset 0 -1px 0 rgba(0, 0, 0, .04);
+}
+
+/* Table (glossy header, zebra rows, hover states)
+   ------------------------------------------------------------------------ */
+.table-wrap {
+  flex: 1;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(var(--thead-grad-top), var(--thead-grad-bot));
+  border-bottom: 1px solid var(--thead-rule);
+  color: #3a4a60;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .03em;
+  padding: 10px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 1px 0 rgba(255, 255, 255, .5);
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, .05);
+  transition: background .12s ease;
+}
+
+tbody tr:nth-child(odd) {
+  background: var(--row-alt);
+}
+
+tbody tr:hover {
+  background: var(--row-hover);
+}
+
+tr.active-row {
+  background: linear-gradient(#e8f0fe, #dbe8ff);
+}
+
+th,
+td {
+  padding: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #1f2937;
+}
+
+.num {
+  width: 56px;
+  text-align: right;
+  padding-right: 16px;
+  color: var(--ink-ghost);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title img {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  color: #0b1220;
+}
+
+.artist {
+  color: var(--ink-dim);
+  font-size: 13px;
+}
+
+.time {
+  width: 90px;
+  color: #334155;
+}
+
+.price {
+  width: 80px;
+  color: #334155;
+}
+
+.buycell {
+  width: 120px;
+}
+
+.buybtn {
+  display: inline-block;
+  padding: 5px 10px;
+  background: linear-gradient(#ffffff, #eef2f7);
+  border: 1px solid #b8c4d6;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #0b1220;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 1px 0 rgba(0, 0, 0, .05);
+}
+
+.buybtn:hover {
+  background: #2f63c7;
+  border-color: #2f63c7;
+}
+
+.noprice {
+  color: var(--ink-dim);
+  font-size: 12px;
+}
+
+.playcell {
+  width: 56px;
+}
+
+.playbtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #b8c4d6;
+  background: linear-gradient(#ffffff, #eef2f7);
+  color: #0b1220;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .9),
+    0 1px 0 rgba(255, 255, 255, .6);
+}
+
+.playbtn:hover {
+  background: linear-gradient(#ffffff, #e8edf5);
+}
+
+.playbtn.playing {
+  background: linear-gradient(#5c92ff, #3b78e7);
+  color: #ffffff;
+  border-color: #2f63c7;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
+}
+
+.noTrack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 75px;
+  gap: 12px;
+  padding: 10px 10px;
+  margin: 6px;
+  background: linear-gradient(#f8fafc, #edf2f7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  color: #475569;
+  font-style: italic;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+
+  
+    .noTrackIcon {
+      width: 48px;
+      height: 48px;
+      opacity: 0.4;
+      fill: currentColor;
+    }
+
+
+
+/* Responsive tweaks
+   ------------------------------------------------------------------------ */
+@media (max-width: 1000px) {
+  .titlebar {
+    grid-template-columns: 120px 1fr 1fr;
+  }
+
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .playerBadge {
+    grid-template-columns: 48px 1fr;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
   }
 }

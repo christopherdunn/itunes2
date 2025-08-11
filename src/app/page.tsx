@@ -1,95 +1,72 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import Sidebar from "./components/Sidebar";
+import Toolbar from "./components/Toolbar";
+import TrackTable from "./components/TrackTable";
+import PlayerBadge from "./components/PlayerBadge";
+import { fetchRss } from "./lib/itunes";
+import type { ChartItem, FeedType, Storefront } from "./types";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [feed, setFeed] = useState<FeedType>("topsongs");
+  const [country, setCountry] = useState<Storefront>("us");
+  const [limit, setLimit] = useState<number>(100);
+  const [genre, setGenre] = useState<string>("all");
+  const [items, setItems] = useState<ChartItem[]>([]);
+  const [query, setQuery] = useState("");
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    console.log("Fetching feed", { feed, country, limit, genre });
+    let canceled = false;
+    (async () => {
+      const data = await fetchRss({ feed, country, limit, genre });
+      if (!canceled) {
+        console.log("Feed loaded", data.length);
+        setItems(data);
+      }
+    })();
+    return () => {
+      canceled = true;
+    };
+  }, [feed, country, limit, genre]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const result = items.filter((r) =>
+      !q || `${r.name} ${r.artist}`.toLowerCase().includes(q)
+    );
+    console.log("Filtered items", result.length);
+    return result;
+  }, [items, query]);
+
+  return (
+    <div className="window">
+      <div className="titlebar">
+        <div className="traffic">
+          <span className="dot red" />
+          <span className="dot yellow" />
+          <span className="dot green" />
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        
+        <Toolbar
+          feed={feed}
+          onFeedChange={setFeed}
+          query={query}
+          onQueryChange={setQuery}
+          country={country}
+          onCountryChange={setCountry}
+          limit={limit}
+          onLimitChange={setLimit}
+        />
+        <PlayerBadge />
+      </div>
+
+      <div className="content">
+        <Sidebar activeGenre={genre} onSelectGenre={setGenre} total={filtered.length} />
+        <div className="main">
+          <TrackTable items={filtered} />
+        </div>
+      </div>
     </div>
   );
 }

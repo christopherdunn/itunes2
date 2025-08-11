@@ -1,0 +1,18 @@
+export const GENRES: { id: number; name: string }[] = [
+  { id: 14, name: "Pop" },
+  { id: 18, name: "Hip-Hop/Rap" },
+  { id: 6, name: "Country" },
+  { id: 21, name: "Rock" },
+  { id: 20, name: "Alternative" },
+  { id: 15, name: "R&B/Soul" },
+  { id: 7, name: "Electronic" },
+  { id: 17, name: "Dance" },
+  { id: 12, name: "Latin" },
+  { id: 11, name: "Jazz" },
+  { id: 5, name: "Classical" },
+  { id: 24, name: "Reggae" },
+  { id: 2, name: "Blues" },
+  { id: 22, name: "Christian & Gospel" },
+  { id: 3, name: "Comedy" },
+  { id: 1160, name: "K-Pop" },
+];
