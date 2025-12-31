@@ -19,9 +19,13 @@ export async function GET(req: Request) {
       console.warn("[/api/lookup] non-OK status:", res.status);
       return NextResponse.json({ previewUrl: null });
     }
-    const data = await res.json();
+    type LookupResult = { previewUrl?: string | null };
+    type LookupResponse = { results?: LookupResult[] };
+
+    const data = (await res.json()) as LookupResponse;
     const previewUrl =
-      data?.results?.find((r: any) => r.previewUrl)?.previewUrl || null;
+      data.results?.find((r) => typeof r.previewUrl === "string")?.previewUrl ||
+      null;
 
     console.log("[/api/lookup] previewUrl:", previewUrl);
     return NextResponse.json({ previewUrl });
